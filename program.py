@@ -1,65 +1,40 @@
-def isSafe(n, j, q):
-    global N
-    count=0
-    if (n==0 and j==0):
-        return True
-    for i in range(N):
-        if q[i][j]==1:
-            count+=1
-    for i in range(N):
-        if q[n][i]==1:
-            count+=1
-    j1=i
-    n1=n
-    while (n1>=0 and j1>=0):
-        if q[n1][j1]==1:
-            count+=1
-        n1-=1
-        j1-=1
-    j1=i
-    n1=n
-    while (n1<N and j1<N):
-        if q[n1][j1]==1:
-            count+=1
-        n1+=1
-        j1+=1
-    j1=i
-    n1=n
-    while (n1<N and j1>=0):
-        if q[n1][j1]==1:
-            count+=1
-        n1+=1
-        j1-=1
-    j1=i
-    n1=n
-    while (n1>=0 and j1<N):
-        if q[n1][j1]==1:
-            count+=1
-        n1-=1
-        j1+=1
-
-    if count>6:
-        return False
-    else:
-        return True
 N = 4
-q = [[0 for _ in range(N)] for _ in range(N)]
-def queens(n, q):
-    global N
-    if n>=N:
-        return
-    for j in range(N):
-        q[n][j] = 1
-        if isSafe(n, j, q):
-            queens(n+1, q)
-        if j==3:
-            if n==3:
-                print("True")
-                print(q)
-                exit()
-            print("False")
-            q[n][j] = 0
-            return
-        q[n][j] = 0
+board = [[0] * N for _ in range(N)]
 
-queens(0, q)
+def is_safe(row, col, b):
+    for r in range(row):
+        if b[r][col] == 1:
+            return False
+
+    r, c = row - 1, col - 1
+    while r >= 0 and c >= 0:
+        if b[r][c] == 1:
+            return False
+        r -= 1
+        c -= 1
+
+    r, c = row - 1, col + 1
+    while r >= 0 and c < N:
+        if b[r][c] == 1:
+            return False
+        r -= 1
+        c += 1
+
+    return True
+
+def solve_n_queens(row, b):
+    if row == N:
+        for r in b:
+            print(r)
+        return True
+
+    for col in range(N):
+        if is_safe(row, col, b):
+            b[row][col] = 1
+            if solve_n_queens(row + 1, b):
+                return True
+            b[row][col] = 0
+
+    return False
+
+solve_n_queens(0, board)
